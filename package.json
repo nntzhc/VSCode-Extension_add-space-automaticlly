@@ -1,0 +1,23 @@
+{
+  "name": "add-space-around-operator",
+  "displayName": "Add Space Around Operator",
+  "description": "A VSCode extension to add space around operators in code.",
+  "version": "1.0.0",
+  "publisher": "YourPublisherName",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "activationEvents": [
+    "onCommand:addSpaceAroundOperator"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.addSpaceAroundOperator",
+        "title": "Add Space Around Operator",
+        "category": "Text"
+      }
+    ]
+  }
+}
