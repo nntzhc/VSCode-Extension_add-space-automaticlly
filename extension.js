@@ -2,7 +2,7 @@
  * @Author: nntzhc 1553090730@qq.com
  * @Date: 2023-03-07 23:36:04
  * @LastEditors: nntzhc 1553090730@qq.com
- * @LastEditTime: 2023-03-08 12:15:23
+ * @LastEditTime: 2023-03-08 13:19:36
  * @FilePath: \add-space-automaticlly\extension.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -14,6 +14,7 @@ function onDidChangeTextDocument(event) {
 
   if (editor && editor.document === document) {
     const currentLine = editor.document.lineAt(editor.selection.active.line).text;
+    if (currentLine[currentLine.length-1]==";"){
       const operators = ['+', '-', '*', '/', '=', '>', '<', '%', '&', '|', '^', '!'];
       let newLine = '';
       for (let i = 0; i < currentLine.length; i++) {
@@ -32,11 +33,14 @@ function onDidChangeTextDocument(event) {
           newLine += char;
         }
       }
-      editor.edit(editBuilder => {
+      if (newLine != currentLine) {
+        editor.edit(editBuilder => {
         const start = new vscode.Position(editor.selection.active.line, 0);
         const end = new vscode.Position(editor.selection.active.line, currentLine.length);
         editBuilder.replace(new vscode.Range(start, end), newLine);
       });
+      }
+    }
   }
 }
 
