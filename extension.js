@@ -2,7 +2,7 @@
  * @Author: nntzhc 1553090730@qq.com
  * @Date: 2023-03-07 23:36:04
  * @LastEditors: nntzhc 1553090730@qq.com
- * @LastEditTime: 2023-03-08 01:47:35
+ * @LastEditTime: 2023-03-08 12:15:23
  * @FilePath: \add-space-automaticlly\extension.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -13,18 +13,30 @@ function onDidChangeTextDocument(event) {
   let editor = vscode.window.activeTextEditor;
 
   if (editor && editor.document === document) {
-    let lastLine = document.lineAt(document.lineCount - 1);
-    let lastChar = lastLine.text.charAt(lastLine.text.length - 1);
-
-    if (lastChar === ';') {
-      let selection = editor.selection;
-      let text = document.getText(selection);
-      let newText = text.replace(/([+\-*\/=])(?=\S)/g, ' $1 ');
-
+    const currentLine = editor.document.lineAt(editor.selection.active.line).text;
+      const operators = ['+', '-', '*', '/', '=', '>', '<', '%', '&', '|', '^', '!'];
+      let newLine = '';
+      for (let i = 0; i < currentLine.length; i++) {
+        const char = currentLine[i];
+        const prevChar = currentLine[i - 1];
+        const nextChar = currentLine[i + 1];
+        if (operators.includes(char)) {
+          if (prevChar !== ' ') {
+            newLine += ' ';
+          }
+          newLine += char;
+          if (nextChar !== ' ' && nextChar !== undefined) {
+            newLine += ' ';
+          }
+        } else {
+          newLine += char;
+        }
+      }
       editor.edit(editBuilder => {
-        editBuilder.replace(selection, newText);
+        const start = new vscode.Position(editor.selection.active.line, 0);
+        const end = new vscode.Position(editor.selection.active.line, currentLine.length);
+        editBuilder.replace(new vscode.Range(start, end), newLine);
       });
-    }
   }
 }
 
